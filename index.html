@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Трекер доходов и расходов</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("salary-tracker-theme") === "light" ? "light" : "dark";
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Личные финансы</p>
+        <h1>Доходы и расходы</h1>
+      </div>
+      <div class="toolbar">
+        <button type="button" id="theme" class="ghost" aria-pressed="false">Светлая тема</button>
+        <label class="period">
+          <span>Период</span>
+          <select id="period">
+            <option value="month">Этот месяц</option>
+            <option value="quarter">Последние 3 месяца</option>
+            <option value="all">Всё время</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Разделы">
+      <button type="button" class="tab" role="tab" id="tabbtn-stats" data-tab="stats" aria-selected="true" aria-controls="tab-stats">Итоги</button>
+      <button type="button" class="tab" role="tab" id="tabbtn-charts" data-tab="charts" aria-selected="false" aria-controls="tab-charts">Графики</button>
+      <button type="button" class="tab" role="tab" id="tabbtn-form" data-tab="form" aria-selected="false" aria-controls="tab-form">Операция</button>
+      <button type="button" class="tab" role="tab" id="tabbtn-list" data-tab="list" aria-selected="false" aria-controls="tab-list">Список</button>
+    </nav>
+
+    <div class="stage">
+    <section class="stats pane active" id="tab-stats" role="tabpanel" aria-labelledby="tabbtn-stats" aria-label="Итоги">
+      <article class="stat income">
+        <p>Доход</p>
+        <strong id="total-income">0 ₽</strong>
+      </article>
+      <article class="stat expense">
+        <p>Расход</p>
+        <strong id="total-expense">0 ₽</strong>
+      </article>
+      <article class="stat balance">
+        <p>Баланс</p>
+        <strong id="total-balance">0 ₽</strong>
+      </article>
+    </section>
+
+    <section class="charts pane" id="tab-charts" role="tabpanel" aria-labelledby="tabbtn-charts" aria-label="Графики" hidden>
+      <article class="panel wide">
+        <h2>По месяцам</h2>
+        <canvas id="bars" width="720" height="280"></canvas>
+        <ul class="legend">
+          <li><i class="swatch income"></i>Доход</li>
+          <li><i class="swatch expense"></i>Расход</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Расходы по категориям</h2>
+        <canvas id="pie-expense" width="280" height="220"></canvas>
+        <ul id="legend-expense" class="legend pie"></ul>
+      </article>
+      <article class="panel">
+        <h2>Доходы по категориям</h2>
+        <canvas id="pie-income" width="280" height="220"></canvas>
+        <ul id="legend-income" class="legend pie"></ul>
+      </article>
+    </section>
+
+    <section class="pane pane-form" id="tab-form" role="tabpanel" aria-labelledby="tabbtn-form" hidden>
+      <form id="form" class="panel form" novalidate>
+        <h2 id="form-title">Новая операция</h2>
+        <label>
+          Тип
+          <select id="type" name="type" required>
+            <option value="expense">Расход</option>
+            <option value="income">Доход</option>
+          </select>
+        </label>
+        <label>
+          Сумма, ₽
+          <input id="amount" name="amount" type="number" min="0.01" step="0.01" required>
+        </label>
+        <label>
+          Категория
+          <select id="category" name="category" required></select>
+        </label>
+        <label>
+          Дата
+          <input id="date" name="date" type="date" required>
+        </label>
+        <label class="full">
+          Заметка
+          <input id="note" name="note" type="text" maxlength="120" placeholder="Необязательно">
+        </label>
+        <p id="form-error" class="error" hidden></p>
+        <div class="actions">
+          <button type="submit" id="submit">Добавить</button>
+          <button type="button" id="cancel" class="ghost" hidden>Отмена</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="pane pane-list" id="tab-list" role="tabpanel" aria-labelledby="tabbtn-list" hidden>
+      <div class="panel list-panel">
+        <div class="list-head">
+          <h2>Операции</h2>
+          <label class="filter">
+            <span>Тип</span>
+            <select id="list-filter">
+              <option value="all">Все</option>
+              <option value="income">Доходы</option>
+              <option value="expense">Расходы</option>
+            </select>
+          </label>
+        </div>
+        <ul id="list" class="ops"></ul>
+        <p id="empty" class="empty" hidden>За этот фильтр записей нет.</p>
+      </div>
+    </section>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
